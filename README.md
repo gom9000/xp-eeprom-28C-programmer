@@ -1,6 +1,6 @@
 # EEPROM 28C Programmer eXPerience
 This is a home project for a simple parallel EEPROM programmer based on Raspberry PI (model 3).
-It currently supports 28C256 (32Kx8) and 28C64 (2Kx8) EEPROMs, but it will probably work with all 28C-family.
+It currently supports 28C16 (2Kx8), 28C64 (8Kx8) and 28C256 (32Kx8) EEPROMs, but it will probably work with all 28C-family (having all the necessary address-bus pins).
 
 ![eeprom-28C-programmer_built](eeprom-28C-programmer_built.jpg)
 
