@@ -1,5 +1,5 @@
 # TODO
-This file contains the todo list of **EEPROM 28C Programmer eXPerience** project.
+This file contains the todo list of **EEPROM 28C Programmer** eXPerience.
 
 
 ## Next Tasks

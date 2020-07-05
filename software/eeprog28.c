@@ -11,7 +11,7 @@
  * Target.....: RaspberryPI
  * Version....: 1.0 2020/06/28
  * Description: EEPROM 28C-family programmer utility
- * URL........: https://github.com/gom9000/eeprom-28C-programmer
+ * URL........: https://github.com/gom9000/xp-eeprom-28C-programmer
  * License....: this program is under the terms of MIT License
  * Compile....: gcc eeprog28.c -o eeprog28 -lwiringPi
  * Notes......: ADDR BUS : A0-A14 = 8,9,7  0,2,3  12,13,14  30,21,22,23,24,25 (wiringPi pin numbers)

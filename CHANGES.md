@@ -1,5 +1,5 @@
 # CHANGES
-This file contains the log of changes of **EEPROM 28C Programmer eXPerience** project.
+This file contains the log of changes of **EEPROM 28C Programmer** eXPerience.
 
 
 ## 0.1.0 2020-07-04 Draft release
