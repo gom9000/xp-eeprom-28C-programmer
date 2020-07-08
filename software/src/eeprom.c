@@ -22,7 +22,6 @@
 
 
 #include <stdio.h>
-#include <stdint.h>
 #include <wiringPi.h>
 #include "eeprom.h"
 
@@ -36,7 +35,7 @@ uint8_t WE = 29;
 
 void setup()
 {
-    for (uint8_t ii=0; ii<BUS_SIZE(D); ii++)
+    for (unsigned char ii=0; ii<BUS_SIZE(D); ii++)
     {
         pinMode(A[ii], OUTPUT);
         digitalWrite(A[ii], LOW);
@@ -53,43 +52,43 @@ void setup()
     digitalWrite(WE, HIGH);
 }
 
-void setAddress(uint32_t address)
+void setAddress(address_t address)
 {
-    for (uint8_t ii=0; ii<BUS_SIZE(A); ii++)
+    for (unsigned char ii=0; ii<BUS_SIZE(A); ii++)
     {
         digitalWrite(A[ii], address & 1);
         address >>= 1;
     }
 }
 
-void setData(uint8_t data)
+void setData(data_t data)
 {
-    for (uint8_t ii=0; ii<BUS_SIZE(D); ii++)
+    for (unsigned char ii=0; ii<BUS_SIZE(D); ii++)
     {
         digitalWrite(D[ii], data & 1);
         data >>= 1;
     }
 }
 
-uint8_t getData()
+data_t getData()
 {
-    uint8_t data = 0;
+    data_t data = 0;
 
-    for (uint8_t ii=BUS_SIZE(D); ii>0; ii--)
+    for (unsigned char ii=BUS_SIZE(D); ii>0; ii--)
         data = (data << 1) | digitalRead(D[ii-1]);
 
     return data;
 }
 
-void setDataBusDirection(uint8_t dir)
+void setDataBusDirection(unsigned char dir)
 {
-    for (uint8_t ii=0; ii<BUS_SIZE(D); ii++)
+    for (unsigned char ii=0; ii<BUS_SIZE(D); ii++)
         pinMode(D[ii], dir);
 }
 
-uint8_t readROM(uint32_t address)
+data_t readROM(address_t address)
 {
-    uint8_t data = 0;
+    data_t data = 0;
     setDataBusDirection(INPUT);
     setAddress(address);
     digitalWrite(CE, LOW);
@@ -102,7 +101,7 @@ uint8_t readROM(uint32_t address)
     return data;
 }
 
-void writeROM(uint32_t address, uint8_t data)
+void writeROM(address_t address, data_t data)
 {
     setAddress(address);
     setDataBusDirection(OUTPUT);
@@ -114,40 +113,40 @@ void writeROM(uint32_t address, uint8_t data)
     digitalWrite(CE, HIGH);
 }
 
-void waitForWriteCycle(uint32_t address, uint8_t data)
+void waitForWriteCycle(address_t address, data_t data)
 {
 //    while (readROM(address)&0x80 != data&0x80) printf("waiting... %d  %d\n", address, data);
     delay(10);
 }
 
-void eraseROM(uint32_t start, uint32_t length, uint8_t value)
+void eraseROM(address_t start, length_t length, data_t blank)
 {
-    for (uint32_t address=start; address<start+length; address++)
+    for (address_t address=start; address<start+length; address++)
     {
-       writeROM(address, value);
-       waitForWriteCycle(address, value);
+       writeROM(address, blank);
+       waitForWriteCycle(address, blank);
     }
 }
 
-int testROM(uint32_t start, uint32_t length, uint8_t value)
+length_t testROM(address_t start, length_t length, data_t data)
 {
-    uint32_t count = 0;
-    for (uint32_t address=start; address<start+length; address++)
-       if (readROM(address) != value) count++;;
+    length_t count = 0;
+    for (address_t address=start; address<start+length; address++)
+       if (readROM(address) != data) count++;;
 
     return count;
 }
 
-void dumpROM(uint32_t start, uint32_t length, FILE *outstream)
+void dumpROM(address_t start, length_t length, FILE *outstream)
 {
     if (outstream == stdout && start%16)
     {
         printf("%.5X:  ", start-start%16);
-        for (uint8_t ii=0; ii<start%16; ii++)
+        for (unsigned char ii=0; ii<start%16; ii++)
             printf("   ");
     }
 
-    for (uint32_t address=start; address<start+length; address++)
+    for (address_t address=start; address<start+length; address++)
     {
         if (outstream == stdout && !(address%16)) printf("%.5X:  ", address);
         fprintf(outstream, "%.2X", readROM(address));
@@ -157,7 +156,7 @@ void dumpROM(uint32_t start, uint32_t length, FILE *outstream)
     if (outstream == stdout && (start+length)%16) printf("\n");
 }
 
-void setSDPMode(uint8_t mode)
+void setSDPMode(unsigned char mode)
 {
     if (mode)
     {

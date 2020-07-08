@@ -24,22 +24,26 @@
 #ifndef __EEPROM_H__
 #define __EEPROM_H__
 
+#include <stdint.h>
+typedef uint32_t address_t;
+typedef uint32_t length_t;
+typedef uint8_t data_t;
 
 #define BUS_SIZE(bus) (sizeof(bus)/sizeof(bus[0]))
 
 
 void setup(void);
-void setAddress(uint32_t);
-void setData(uint8_t);
-uint8_t getData(void);
-void setDataBusDirection(uint8_t);
-uint8_t readROM(uint32_t);
-void writeROM(uint32_t, uint8_t);
-void waitForWriteCycle(uint32_t, uint8_t);
-void eraseROM(uint32_t, uint32_t, uint8_t);
-int testROM(uint32_t, uint32_t, uint8_t);
-void dumpROM(uint32_t, uint32_t, FILE*);
-void setSDPMode(uint8_t);
+void setAddress(address_t);
+void setData(data_t);
+data_t getData(void);
+void setDataBusDirection(unsigned char);
+data_t readROM(address_t);
+void writeROM(address_t, data_t);
+void waitForWriteCycle(address_t, data_t);
+void eraseROM(address_t, address_t, data_t);
+length_t testROM(address_t, length_t, data_t);
+void dumpROM(address_t, length_t, FILE*);
+void setSDPMode(unsigned char);
 
 
 #endif /* !defined(__EEPROM_H__) */

@@ -13,7 +13,6 @@
  * Description: EEPROM 28C-family programmer utility
  * URL........: https://github.com/gom9000/xp-eeprom-28C-programmer
  * License....: this program is under the terms of MIT License
- * Compile....: gcc eeprog28.c -o eeprog28 -lwiringPi
  * Notes......: ADDR BUS : A0-A14 = 8,9,7  0,2,3  12,13,14  30,21,22,23,24,25 (wiringPi pin numbers)
  *              DATA BUS : D0-D7  = 15,16,1  4,5  6,10,11
  *              CTRL BUS : CE=27, OE=28, WE=29
@@ -23,7 +22,6 @@
 
 #include <ctype.h>
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <wiringPi.h>
@@ -32,7 +30,6 @@
 
 int main(int argc, char **argv)
 {
-    int address = 0;
     int c;
     unsigned char t_flag = 0;
     unsigned char d_flag = 0;
@@ -41,8 +38,9 @@ int main(int argc, char **argv)
     unsigned char v_flag = 0;
     unsigned char l_flag = 0;
     unsigned char p_flag = 0;
-    int length = 0;
+    int address = 0;
     int start = 0;
+    int length = 0;
     int mode = 0;
     int zerobyte = 0xFF;
     char *filename = NULL;
