@@ -19,9 +19,6 @@ Schematics and PCB layouts are designed with ExpressPCB free CAD software.
 ### Software
 The software is written in C and uses WiringPI for GPIO access, and the GNU Getopt function to automate the parsing of command-line options.
 
-Compile with:
-	gcc eeprog28.c -o eeprog28 -lwiringPi
-
 Below is the list of options with the relative allowed params, as shown in the help:
 
 ![eeprom-28C-programmer_usage](software/eeprom-28C-programmer_usage.jpg)
