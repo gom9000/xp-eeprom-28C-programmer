@@ -13,23 +13,29 @@
  * Description: EEPROM 28C-family programmer utility
  * URL........: https://github.com/gom9000/xp-eeprom-28C-programmer
  * License....: this program is under the terms of MIT License
- * Module.....: header file
- * Notes......: ADDR BUS : A0-A14 = 8,9,7  0,2,3  12,13,14  30,21,22,23,24,25 (wiringPi pin numbers)
- *              DATA BUS : D0-D7  = 15,16,1  4,5  6,10,11
- *              CTRL BUS : CE=27, OE=28, WE=29
- *
+ * Module.....: header file of library module eeprom.c
+ * Notes......:
  */
 
 
 #ifndef __EEPROM_H__
 #define __EEPROM_H__
 
+
 #include <stdint.h>
 typedef uint32_t address_t;
 typedef uint32_t length_t;
 typedef uint8_t data_t;
 
+
 #define BUS_SIZE(bus) (sizeof(bus)/sizeof(bus[0]))
+
+
+extern uint8_t D[8]; // D0-D7
+extern uint8_t A[15]; // A0-A14
+extern uint8_t CE;
+extern uint8_t OE;
+extern uint8_t WE;
 
 
 void setup(void);

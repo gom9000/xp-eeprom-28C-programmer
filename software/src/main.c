@@ -38,11 +38,10 @@ int main(int argc, char **argv)
     unsigned char v_flag = 0;
     unsigned char l_flag = 0;
     unsigned char p_flag = 0;
-    int address = 0;
-    int start = 0;
-    int length = 0;
-    int mode = 0;
-    int zerobyte = 0xFF;
+    unsigned int start = 0;
+    unsigned int length = 0;
+    unsigned char mode = 0;
+    unsigned int zerobyte = 0xFF;
     char *filename = NULL;
     FILE *fp = stdout;
 
@@ -85,7 +84,7 @@ int main(int argc, char **argv)
                 break;
             case 'l':
                 l_flag = 1;
-                if (optarg) sscanf(optarg, "%d", &mode);
+                if (optarg) sscanf(optarg, "%c", &mode);
                 break;
             case 'p':
                 p_flag = 1;
@@ -113,7 +112,7 @@ int main(int argc, char **argv)
                 printf("    -s: <START> set the start hex address, default value is 0x0\n");
                 printf("    -f: <DATAFILE> set the datafile where to dump/read hex values, default value for dump option is stdout\n");
                 printf("    -z: <BLANK> set the blank hex data value to fill/test the rom, default value is 0xFF\n");
-                printf("    -p: show the value of input params\n");
+                printf("    -p: show the value of input params and bus pin numbers\n");
                 return 0;
             case '?':
                 if (optopt == 'w' || optopt == 'v')
@@ -133,12 +132,17 @@ int main(int argc, char **argv)
 
     if (p_flag)
     {
-        printf("start-address=%.5X, data-length=%.5X, zero-byte=%.2X, data-file=%s SDP=%d\n", start, length, zerobyte, filename, mode);
+        printf("start-address=%.5X, data-length=%.5X, zero-byte=%.2X, data-file=%s, SDP=%d\n", start, length, zerobyte, filename, mode);
+        printf("address bus pins: ");
+        for (unsigned char ii=0; ii<BUS_SIZE(A); ii++) printf("%d ", A[ii]);
+        printf("\ndata bus pins: ");
+        for (unsigned char ii=0; ii<BUS_SIZE(D); ii++) printf("%d ", D[ii]);
+        printf("\nWE pin: %d, CE pin: %d, OE pin: %d\n", WE, CE, OE);
     }
     if (t_flag)
     {
         uint32_t count;
-        if (count = testROM(start, length, zerobyte))
+        if ((count = testROM(start, length, zerobyte)))
             printf("ROM is not empty, found %d data bytes\n", count);
         else
             printf("ROM is empty\n");
@@ -162,7 +166,7 @@ int main(int argc, char **argv)
     }
     if (w_flag)
     {
-        int data = 0;
+        unsigned int data = 0;
         uint32_t address = 0;
         if (filename) fp = fopen(filename, "r");
         printf("Writing ROM with contents of file: %s from start 0x%X...\n", filename, start);
@@ -180,7 +184,7 @@ int main(int argc, char **argv)
     }
     if (v_flag)
     {
-        int data = 0;
+        unsigned int data = 0;
         int actual = 0;
         uint32_t address = 0;
         if (filename) fp = fopen(filename, "r");
