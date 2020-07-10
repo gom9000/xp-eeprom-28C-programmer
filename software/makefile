@@ -7,10 +7,9 @@
 # Author.....: Alessandro Fraschetti (mail: gos95@gommagomma.net)
 # Target.....: RaspberryPI
 # Version....: 1.0 2020/06/06
-# Description: EEPROM 28C-family programmer utility
+# Description: makefile for EEPROM 28C-family programmer utility
 # URL........: https://github.com/gom9000/xp-eeprom-28C-programmer
 # License....: this program is under the terms of MIT License
-# Module.....: makefile for GCC compiler
 # Notes......:
 
 
@@ -19,9 +18,10 @@ OBJPATH   = obj
 BINPATH   = dist
  
 CC        = gcc
-RM        = rm -f
+RM        = -rm -f
 
-CFLAGS    = -Wall -g
+CFLAGS    = -Wall -pedantic
+LFLAGS    =
 
 BIN       = eeprog28
 OBJS      = $(OBJPATH)/main.o $(OBJPATH)/eeprom.o
@@ -29,13 +29,15 @@ LIBS      = -lwiringPi
 
 
 $(BINPATH)/$(BIN): $(OBJS)
-	$(CC) $(CFLAGS) $(LIBS) $(OBJS) -o $(BINPATH)/$(BIN)
-
-
-clean:
-	$(RM) $(OBJS) $(BINPATH)/$(BIN)
+	$(CC) $(CFLAGS) $(LFLAGS) $(LIBS) $(OBJS) -o $(BINPATH)/$(BIN)
 
 $(OBJPATH)/main.o: $(SRCPATH)/main.c $(SRCPATH)/eeprom.h
-	$(CC) -c $(SRCPATH)/main.c -o $(OBJPATH)/main.o
+	$(CC) $(CFLAGS) -c $(SRCPATH)/main.c -o $(OBJPATH)/main.o
+
 $(OBJPATH)/eeprom.o: $(SRCPATH)/eeprom.c $(SRCPATH)/eeprom.h
-	$(CC) -c $(SRCPATH)/eeprom.c -o $(OBJPATH)/eeprom.o
+	$(CC) $(CFLAGS) -c $(SRCPATH)/eeprom.c -o $(OBJPATH)/eeprom.o
+
+
+.PHONY : clean
+clean:
+	$(RM) $(OBJS) $(BINPATH)/$(BIN)
