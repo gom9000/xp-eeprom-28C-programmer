@@ -3,7 +3,7 @@ This file contains the log of changes of **EEPROM 28C Programmer** eXPerience.
 
 
 ## "mercury" 1.1.0 2020-07-10 Feature release
-- Add software "-p" option to print the bus pin number of the RasbperryPI GPIOs (wiringPI numbering)
+- Added software "-p" option to print the bus pin number of the RasbperryPI GPIOs (wiringPI numbering)
 
 
 ## "mercury" 1.0.0 2020-07-08 Feature release
