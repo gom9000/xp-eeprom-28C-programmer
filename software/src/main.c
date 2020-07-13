@@ -37,6 +37,7 @@ int main(int argc, char **argv)
     unsigned char w_flag = 0;
     unsigned char v_flag = 0;
     unsigned char l_flag = 0;
+    unsigned char a_flag = 0;
     unsigned char p_flag = 0;
     unsigned int start = 0;
     unsigned int length = 0;
@@ -49,7 +50,7 @@ int main(int argc, char **argv)
     wiringPiSetup();
     setup();
 
-    while ((c = getopt(argc, argv, "s:f:z:t:d:e:w::v::l:ph")) != -1)
+    while ((c = getopt(argc, argv, "s:f:z:t:d:e:w::v::l:aph")) != -1)
     {
         switch (c)
         {
@@ -86,6 +87,9 @@ int main(int argc, char **argv)
                 l_flag = 1;
                 if (optarg) sscanf(optarg, "%c", &mode);
                 break;
+            case 'a':
+                a_flag = 1;
+                break;
             case 'p':
                 p_flag = 1;
                 break;
@@ -112,6 +116,7 @@ int main(int argc, char **argv)
                 printf("    -s: <START> set the start hex address, default value is 0x0\n");
                 printf("    -f: <DATAFILE> set the datafile where to dump/read hex values, default value for dump option is stdout\n");
                 printf("    -z: <BLANK> set the blank hex data value to fill/test the rom, default value is 0xFF\n");
+                printf("    -a: set the mode of the datafile as ascii (default mode is binary)\n");
                 printf("    -p: show the value of input params and bus pin numbers\n");
                 return 0;
             case '?':
@@ -132,7 +137,7 @@ int main(int argc, char **argv)
 
     if (p_flag)
     {
-        printf("start-address=%.5X, data-length=%.5X, zero-byte=%.2X, data-file=%s, SDP=%d\n", start, length, zerobyte, filename, mode);
+        printf("start-address=%.5X, data-length=%.5X, zero-byte=%.2X, data-file=%s, data-file-mode=%s, SDP=%d\n", start, length, zerobyte, filename, (a_flag? "ascii":"binary"), mode);
         printf("address bus pins: ");
         for (unsigned char ii=0; ii<BUS_SIZE(A); ii++) printf("%d ", A[ii]);
         printf("\ndata bus pins: ");
@@ -141,7 +146,7 @@ int main(int argc, char **argv)
     }
     if (t_flag)
     {
-        uint32_t count;
+        length_t count;
         if ((count = testROM(start, length, zerobyte)))
             printf("ROM is not empty, found %d data bytes\n", count);
         else
@@ -164,12 +169,31 @@ int main(int argc, char **argv)
         printf("ROM erased.\n");
         return 0;
     }
-    if (w_flag)
+    if (w_flag && !a_flag)
+    {
+        data_t data = 0;
+        address_t address = 0;
+        if (filename) fp = fopen(filename, "rb");
+        printf("Writing ROM with contents of binary file: %s from start 0x%X...\n", filename, start);
+        while (!feof(fp) && address<length)
+        {
+            fread(&data, sizeof(data_t), 1, fp); 
+            writeROM(start+address, data);
+            waitForWriteCycle(start+address, data);
+            address++;
+        }
+        if (filename) fclose(fp);
+        if (address<length)
+            eraseROM(start+address, length-address, zerobyte);
+        printf("0x%X locations of ROM wrote.\n", address);
+        return 0;
+    }
+    if (w_flag && a_flag)
     {
         unsigned int data = 0;
-        uint32_t address = 0;
+        address_t address = 0;
         if (filename) fp = fopen(filename, "r");
-        printf("Writing ROM with contents of file: %s from start 0x%X...\n", filename, start);
+        printf("Writing ROM with contents of ascii file: %s from start 0x%X...\n", filename, start);
         while (fscanf(fp, "%2X", &data) == 1 && address<length)
         {
             writeROM(start+address, data);
@@ -182,25 +206,54 @@ int main(int argc, char **argv)
         printf("0x%X locations of ROM wrote.\n", address);
         return 0;
     }
-    if (v_flag)
+    if (v_flag && !a_flag)
     {
-        unsigned int data = 0;
-        int actual = 0;
-        uint32_t address = 0;
-        if (filename) fp = fopen(filename, "r");
+        address_t address = 0;
+        data_t data = 0;
+        data_t actual = 0;
+        char result = 1;
+        if (filename) fp = fopen(filename, "rb");
         if (!length) length = -1;
-        printf("Verifying ROM with contents of file: %s from start 0x%X...\n", filename, start);
-        while (fscanf(fp, "%2X", &data) == 1 && address-length)
+        printf("Verifying ROM with contents of binary file: %s from start 0x%X...\n", filename, start);
+        while (!feof(fp) && address-length)
         {
+            result = 0;
+            fread(&data, sizeof(data_t), 1, fp);
             actual = readROM(start+address++);
             if (data != actual)
             {
-                data = -1;
+                result = 1;
                 break;
             }
         } 
         if (filename) fclose(fp);
-        if (data == -1)
+        if (result)
+            printf("verify error, found 0x%X at location 0x%X.\n", actual, --address);
+        else
+            printf("verify done.\n");
+        return 0;
+    }
+    if (v_flag && a_flag)
+    {
+        address_t address = 0;
+        unsigned int data = 0;
+        unsigned int actual = 0;
+        char result = 1;
+        if (filename) fp = fopen(filename, "r");
+        if (!length) length = -1;
+        printf("Verifying ROM with contents of ascii file: %s from start 0x%X...\n", filename, start);
+        while (fscanf(fp, "%2X", &data) == 1 && address-length)
+        {
+            result = 0;
+            actual = readROM(start+address++);
+            if (data != actual)
+            {
+                result = 1;
+                break;
+            }
+        } 
+        if (filename) fclose(fp);
+        if (result)
             printf("verify error, found 0x%X at location 0x%X.\n", actual, --address);
         else
             printf("verify done.\n");
