@@ -35,7 +35,7 @@ uint8_t WE = 29;
 
 void setup()
 {
-    for (unsigned char ii=0; ii<BUS_SIZE(D); ii++)
+    for (unsigned char ii=0; ii<BUS_SIZE(A); ii++)
     {
         pinMode(A[ii], OUTPUT);
         digitalWrite(A[ii], LOW);

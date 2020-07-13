@@ -2,6 +2,10 @@
 This file contains the log of changes of **EEPROM 28C Programmer** eXPerience.
 
 
+## "mercury" 1.2.0 2020-07-13 Feature release
+- Added software "-a" option to set datafile as ascii vs binary
+
+
 ## "mercury" 1.1.0 2020-07-10 Feature release
 - Added software "-p" option to print the bus pin number of the RasbperryPI GPIOs (wiringPI numbering)
 

@@ -13,6 +13,7 @@ dist/
 *.cof
 *.map
 *.hex
+*.bin
 
 *.fil
 
