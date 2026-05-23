@@ -1,7 +1,5 @@
- # EEPROM 28C Programmer eXPerience
-
-**Type**: Power Supply | **Status**: Completed
-
+ # EEPROM 28C Programmer
+**Type**: Hosted Project | **Status**: Completed
 
 This is a home project for a simple parallel EEPROM programmer based on Raspberry PI (model 3).
 
@@ -73,4 +71,4 @@ See file [TODO](TODO.md) for the project future plans
 
 **Author**: Alessandro Fraschetti (gom9000).<br/>
 **Technical Notes**: The hardware design was supported by **ExpressPCB** and the custom **[expresspcb-goslib](https://github.com/gom9000/expresspcb-goslib)** libraries.<br/>
-**License**: This experience is licensed under the [MIT License](LICENSE). 
+**License**: This project is licensed under the [MIT License](LICENSE). 
